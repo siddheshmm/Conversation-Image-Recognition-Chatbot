@@ -1,9 +1,7 @@
-// Example JavaScript to update the category text
 function updateCategory(category) {
     document.getElementById('category-text').textContent = category;
 }
 
-// Handle image upload
 document.getElementById('image-upload').addEventListener('change', function (e) {
     const file = e.target.files[0];
     const formData = new FormData();
@@ -32,7 +30,6 @@ document.getElementById('image-upload').addEventListener('change', function (e) 
         });
 });
 
-// Handle chat messages
 function sendMessage() {
     const input = document.getElementById('user-input');
     const message = input.value.trim();

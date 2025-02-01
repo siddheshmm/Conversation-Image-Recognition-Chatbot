@@ -10,8 +10,8 @@ class ChatBot:
             logger.info("Loading BlenderBot model and tokenizer...")
             self.tokenizer = BlenderbotTokenizer.from_pretrained("facebook/blenderbot-400M-distill")
             self.model = BlenderbotForConditionalGeneration.from_pretrained("facebook/blenderbot-400M-distill")
-            self.image_context = None  # Store image context
-            self.conversation_history = []  # Store conversation history
+            self.image_context = None
+            self.conversation_history = []
             logger.info("Model loaded successfully!")
         except Exception as e:
             logger.error(f"Failed to load model: {str(e)}")
@@ -29,27 +29,21 @@ class ChatBot:
             if not user_input or not user_input.strip():
                 return "Please provide a valid input."
             
-            # Add image context to the input if available
             if self.image_context:
-                # Emphasize the image context in the input
                 user_input = (
                     f"The image shows a {self.image_context['label']} with {self.image_context['confidence']}% confidence. "
                     f"Please focus on the image when answering questions about it. {user_input}"
                 )
                 self.image_context = None  # Reset image context after using it
             
-            # Add user input to conversation history
             self.conversation_history.append(f"User: {user_input}")
             
-            # Generate response
             inputs = self.tokenizer([user_input], return_tensors="pt")
             reply_ids = self.model.generate(**inputs)
             response = self.tokenizer.batch_decode(reply_ids, skip_special_tokens=True)[0]
             
-            # Add bot response to conversation history
             self.conversation_history.append(f"Bot: {response}")
             
-            # Ensure response is not empty
             if not response.strip():
                 return "I'm not sure how to respond to that. Can you rephrase?"
             
